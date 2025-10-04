@@ -1,0 +1,32 @@
+version: '3.9'
+services:
+  backend:
+    build: ./backend
+    environment:
+      - SIMSTACK_ADDR=:8080
+      - CEREBRAS_API_KEY=${CEREBRAS_API_KEY}
+      - CEREBRAS_API_BASE=${CEREBRAS_API_BASE:-https://api.cerebras.ai/v1}
+      - CEREBRAS_MODEL=${CEREBRAS_MODEL:-llama3.1-8b}
+      - QUEUE_SIMULATOR_URL=http://queue:8000
+      - TRAFFIC_SIMULATOR_URL=http://traffic:8000
+      - RESOURCE_SIMULATOR_URL=http://resource:8000
+    ports:
+      - "8080:8080"
+    depends_on:
+      - queue
+      - traffic
+      - resource
+  queue:
+    build: ./simulators/queue
+    ports:
+      - "8101:8000"
+  traffic:
+    build: ./simulators/traffic
+    ports:
+      - "8102:8000"
+  resource:
+    build: ./simulators/resource
+    ports:
+      - "8103:8000"
+
+
